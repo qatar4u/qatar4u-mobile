@@ -109,7 +109,7 @@
     <string name="card_less_transparent">تقليل الشفافية</string>
     <string name="card_more_transparent">زيادة الشفافية</string>
     <string name="card_preview">معاينة بطاقة التطبيق</string>
-    <string name="card_transparency_note">٠٪ خلفية معتمة، و١٠٠٪ خلفية شفافة. تبقى أيقونات التطبيقات وصورها وأسماؤها واضحة. استخدم الزرين للتعديل بالريموت.</string>
+    <string name="card_transparency_note" formatted="false">٠٪ خلفية معتمة، و١٠٠٪ خلفية شفافة. تبقى أيقونات التطبيقات وصورها وأسماؤها واضحة. استخدم الزرين للتعديل بالريموت.</string>
     <string name="card_reset">استعادة خلفية البطاقات الافتراضية</string>
     <string name="s_downloads">تنزيل التطبيقات</string>
     <string name="download_help">أدخل كود Downloader من AFTVnews أو رابط مباشر لملف APK. الكود يختصر رابط ملف مستضاف ولا يرفع التطبيق.</string>

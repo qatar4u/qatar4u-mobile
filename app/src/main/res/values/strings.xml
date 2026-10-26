@@ -112,7 +112,7 @@
     <string name="card_less_transparent">Less transparent</string>
     <string name="card_more_transparent">More transparent</string>
     <string name="card_preview">App card preview</string>
-    <string name="card_transparency_note">0% is opaque; 100% is transparent. App icons, banners and names stay clear. Use the buttons with your remote.</string>
+    <string name="card_transparency_note" formatted="false">0% is opaque; 100% is transparent. App icons, banners and names stay clear. Use the buttons with your remote.</string>
     <string name="card_reset">Reset card background</string>
     <string name="s_downloads">Download apps</string>
     <string name="download_help">Enter an AFTVnews Downloader code or a direct APK link. The code points to a hosted link; it does not upload an app.</string>
