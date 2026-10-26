@@ -19,3 +19,5 @@ Added persisted favorites, four-column launcher, four static theme backgrounds, 
 Server build review: initial SDK setup failure corrected; mobile-only manifest removes Leanback feature. Arabic/English device-trial guides added. Final server build outcome is recorded in GitHub Actions.
 
 Validated candidate: commit 250ee3316420c2d5c4d975d482b344710bf0f0c4, Actions run 40284146672. testDebugUnitTest, lintDebug and assembleDebug all passed. Downloaded APK SHA256 matches generated SHA256SUMS: a16dbfec96c087f18ccaefd4ee037ad00bf4e3bd69d84d39afa7e77a564cf815. APK size 18,309,429 bytes. Native runtime/visual/performance checks on the physical phone remain pending. Earlier local-build failure notes describe the prior environment; the successful server build supersedes the compilation blocker.
+
+Qatar theme 1.1.0: maroon #8A1538, snow white #F5F8FA, gold borders #C6A15B; light cards, circular outlined icons, Qatar-inspired nine-point header detail and redesigned navigation. Text gold uses a darker shade on snow for readability. Preview remains illustrative; native runtime screenshots pending.

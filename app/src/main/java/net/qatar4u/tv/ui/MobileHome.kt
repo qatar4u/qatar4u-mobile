@@ -12,6 +12,16 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.Canvas
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Apps
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Dashboard
+import androidx.compose.material.icons.outlined.HealthAndSafety
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -44,8 +54,10 @@ fun MobileHome() {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val prefs = remember { context.getSharedPreferences("mobile", Context.MODE_PRIVATE) }
+    // Apply the requested Qatar identity once; subsequent wallpaper choices remain saved.
+    if (prefs.getInt("theme_revision", 0) < 2) prefs.edit().putString("wallpaper", "qatar").putInt("theme_revision", 2).apply()
     var ar by remember { mutableStateOf(prefs.getBoolean("ar", true)) }
-    var wallpaper by remember { mutableStateOf(prefs.getString("wallpaper", "gold") ?: "gold") }
+    var wallpaper by remember { mutableStateOf(prefs.getString("wallpaper", "qatar") ?: "qatar") }
     var customUri by remember { mutableStateOf(prefs.getString("wallpaper_uri", "") ?: "") }
     var favorites by remember { mutableStateOf(prefs.getStringSet("favorites", emptySet())?.toSet() ?: emptySet()) }
     var favoritesOnly by remember { mutableStateOf(false) }
@@ -107,49 +119,45 @@ fun MobileHome() {
                 if (ar) androidx.compose.ui.unit.LayoutDirection.Rtl else androidx.compose.ui.unit.LayoutDirection.Ltr
         ) {
         val colors = when (wallpaper) {
-            "maroon" -> listOf(Color(0xFF39152A), Color(0xFF080B12))
-            "blue" -> listOf(Color(0xFF142E46), Color(0xFF080B12))
-            "plain" -> listOf(Q4u.Background, Q4u.Background)
-            else -> listOf(Color(0xFF352D1D), Q4u.Background)
+            "maroon" -> listOf(Q4u.Maroon, Color(0xFF5F0E2A))
+            "pearl" -> listOf(Color(0xFF762741), Color(0xFF381322))
+            "plain" -> listOf(Q4u.Maroon, Q4u.Maroon)
+            else -> listOf(Color(0xFF8A1538), Color(0xFF3B0B20))
         }
         Box(Modifier.fillMaxSize().background(Brush.verticalGradient(colors))) {
         wallpaperBitmap?.let { Image(it.asImageBitmap(), null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop) }
-        Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.30f)))
+        Box(Modifier.fillMaxSize().background(Color(0xFF4A0D25).copy(alpha = if (wallpaperBitmap == null) 0f else 0.68f)))
         Scaffold(containerColor = Color.Transparent, bottomBar = {
-            NavigationBar {
+            NavigationBar(containerColor = Q4u.Background, modifier = Modifier.border(BorderStroke(1.dp, Q4u.Gold)), tonalElevation = 0.dp) {
                 listOf(label("التطبيقات", "Apps"), label("العناية", "Care"), label("الإدارة", "Manager"), label("الإعدادات", "Settings")).forEachIndexed { i, name ->
-                    NavigationBarItem(selected = tab == i, onClick = { tab = i; refresh++ }, icon = { Text(listOf("◉", "✦", "▦", "⚙")[i]) }, label = { Text(name) })
+                    NavigationBarItem(selected = tab == i, onClick = { tab = i; refresh++ }, icon = { Icon(listOf(Icons.Outlined.Apps, Icons.Outlined.HealthAndSafety, Icons.Outlined.Dashboard, Icons.Outlined.Settings)[i], contentDescription = null) }, label = { Text(name) })
                 }
             }
         }) { padding ->
             Column(Modifier.fillMaxSize().padding(padding).padding(horizontal = 16.dp)) {
-                Text("Qatar4u", color = Q4u.Gold, style = MaterialTheme.typography.titleLarge)
-                Text("Mobile", style = MaterialTheme.typography.titleMedium)
+                QatarMobileHeader(label("واجهة بروح قطر", "Inspired by Qatar"))
                 LazyVerticalGrid(columns = GridCells.Fixed(4), modifier = Modifier.weight(1f), contentPadding = PaddingValues(vertical = 16.dp), verticalArrangement = Arrangement.spacedBy(12.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    item(span = { GridItemSpan(maxLineSpan) }) {
-                        Text(SimpleDateFormat("EEE, d MMM • HH:mm", if (ar) Locale("ar") else Locale.ENGLISH).format(Date()), color = Q4u.TextSecondary)
-                    }
                     if (tab == 0) {
                         item(span = { GridItemSpan(maxLineSpan) }) { MobileWidgets(ar, widgetRevision) }
                         item(span = { GridItemSpan(maxLineSpan) }) {
-                            OutlinedTextField(value = query, onValueChange = { query = it }, label = { Text(label("ابحث عن تطبيق", "Search apps")) }, singleLine = true, modifier = Modifier.fillMaxWidth())
+                            OutlinedTextField(value = query, onValueChange = { query = it }, label = { Text(label("ابحث عن تطبيق", "Search apps")) }, singleLine = true, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(22.dp), colors = OutlinedTextFieldDefaults.colors(unfocusedContainerColor = Q4u.Background, focusedContainerColor = Q4u.Surface))
                         }
                         item(span = { GridItemSpan(maxLineSpan) }) {
-                            FilterChip(selected = favoritesOnly, onClick = { favoritesOnly = !favoritesOnly }, label = { Text(label("المفضلة فقط", "Favorites only")) })
+                            FilterChip(selected = favoritesOnly, onClick = { favoritesOnly = !favoritesOnly }, label = { Text(label("المفضلة فقط", "Favorites only")) }, colors = FilterChipDefaults.filterChipColors(containerColor = Q4u.Background, selectedContainerColor = Color(0xFFF2E5C9)))
                         }
                         items(apps.filter { it.label.contains(query, true) && (!favoritesOnly || it.pkg in favorites) }, key = { it.pkg }) { app ->
                             val bitmap by produceState<android.graphics.Bitmap?>(null, app.pkg) {
                                 value = withContext(Dispatchers.IO) { Apps.icon(context, app.pkg, 112) }
                             }
                             Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-                                Box(Modifier.size(64.dp).clip(CircleShape).background(Q4u.Surface).clickable { Apps.launch(context, app) }, contentAlignment = Alignment.Center) {
+                                Box(Modifier.size(64.dp).clip(CircleShape).background(Q4u.Surface).border(1.5.dp, Q4u.Gold, CircleShape).clickable { Apps.launch(context, app) }, contentAlignment = Alignment.Center) {
                                     bitmap?.let { Image(it.asImageBitmap(), app.label, Modifier.fillMaxSize().padding(8.dp)) }
                                 }
-                                Text(app.label, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodySmall)
-                                TextButton(onClick = { selected = app }, contentPadding = PaddingValues(0.dp)) { Text(label("إدارة", "Manage"), style = MaterialTheme.typography.labelSmall) }
+                                Text(app.label, color = Color.White, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodySmall)
+                                TextButton(onClick = { selected = app }, contentPadding = PaddingValues(0.dp)) { Text(label("إدارة", "Manage"), color = Q4u.GoldLight, style = MaterialTheme.typography.labelSmall) }
                             }
                         }
-                        item(span = { GridItemSpan(maxLineSpan) }) { TextButton(onClick = { refresh++ }) { Text(label("تحديث التطبيقات", "Refresh apps")) } }
+                        item(span = { GridItemSpan(maxLineSpan) }) { TextButton(onClick = { refresh++ }) { Text(label("تحديث التطبيقات", "Refresh apps"), color = Color.White) } }
                     } else if (tab == 1) {
                         item(span = { GridItemSpan(maxLineSpan) }) {
                             val info = remember(refresh, tab) {
@@ -161,10 +169,16 @@ fun MobileHome() {
                                 label("الذاكرة المتاحة / الإجمالي", "Available / total RAM") + ": ${gb(mem.availMem)} / ${gb(mem.totalMem)}\n" +
                                 label("التخزين المتاح / الإجمالي", "Available / total storage") + ": ${gb(disk.availableBytes)} / ${gb(disk.totalBytes)}"
                             }
-                            Text(info, style = MaterialTheme.typography.bodyMedium)
+                            Surface(shape = RoundedCornerShape(24.dp), border = BorderStroke(1.dp, Q4u.Gold), color = Q4u.Background) {
+                                Column(Modifier.padding(18.dp)) {
+                                    Text(label("العناية بجهازك", "Device care"), color = Q4u.Maroon, style = MaterialTheme.typography.titleLarge)
+                                    Spacer(Modifier.height(12.dp))
+                                    Text(info, style = MaterialTheme.typography.bodyMedium)
+                                }
+                            }
                         }
                         item(span = { GridItemSpan(maxLineSpan) }) {
-                            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(Q4u.Background).border(1.dp, Q4u.Gold, RoundedCornerShape(24.dp)).padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                 Button(onClick = { refresh++ }) { Text(label("تحديث بيانات الجهاز", "Refresh device data")) }
                                 Button(onClick = { confirmClean = true }) { Text(label("تنظيف مؤقتات هذا التطبيق", "Clear this app's cache")) }
                                 OutlinedButton(onClick = { open(Settings.ACTION_INTERNAL_STORAGE_SETTINGS) }) { Text(label("إدارة مساحة الهاتف", "Phone storage")) }
@@ -176,7 +190,7 @@ fun MobileHome() {
                         }
                     } else if (tab == 2) {
                         item(span = { GridItemSpan(maxLineSpan) }) {
-                            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(Q4u.Background).border(1.dp, Q4u.Gold, RoundedCornerShape(24.dp)).padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                 Text(label("إدارة التطبيقات", "App manager"), style = MaterialTheme.typography.titleLarge)
                                 Text(label("التطبيقات المرئية للتطبيق فقط؛ افتح إعدادات النظام للقائمة الكاملة. التصنيف لا يعني أن التطبيق غير ضروري.", "Only apps visible to this launcher are listed. Open system settings for the full list. A category does not mean an app is unnecessary."), style = MaterialTheme.typography.bodySmall)
                                 OutlinedTextField(query, { query = it }, label = { Text(label("ابحث بالاسم أو الحزمة", "Search name or package")) }, modifier = Modifier.fillMaxWidth(), singleLine = true)
@@ -188,22 +202,22 @@ fun MobileHome() {
                             }
                         }
                         val filtered = apps.filter { (appFilter == 0 || (appFilter == 2) == it.isSystem) && (it.label.contains(query, true) || it.pkg.contains(query, true)) }
-                        item(span = { GridItemSpan(maxLineSpan) }) { Text(label("النتائج: ", "Results: ") + filtered.size) }
+                        item(span = { GridItemSpan(maxLineSpan) }) { Text(label("النتائج: ", "Results: ") + filtered.size, color = Color.White) }
                         items(filtered, key = { "manage:" + it.pkg }, span = { GridItemSpan(maxLineSpan) }) { app ->
-                            OutlinedCard(onClick = { selected = app }, modifier = Modifier.fillMaxWidth()) {
+                            OutlinedCard(onClick = { selected = app }, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(20.dp), border = BorderStroke(1.dp, Q4u.Gold), colors = CardDefaults.outlinedCardColors(containerColor = Q4u.Background)) {
                                 Column(Modifier.padding(12.dp)) {
                                     Text(app.label, style = MaterialTheme.typography.titleMedium)
                                     Text(app.pkg, style = MaterialTheme.typography.bodySmall)
-                                    Text(if (app.isSystem) label("تطبيق نظام • إدارة من Android", "System app • manage in Android") else label("تطبيق مستخدم", "User app"), color = Q4u.Gold, style = MaterialTheme.typography.bodySmall)
+                                    Text(if (app.isSystem) label("تطبيق نظام • إدارة من Android", "System app • manage in Android") else label("تطبيق مستخدم", "User app"), color = Color(0xFF805D1B), style = MaterialTheme.typography.bodySmall)
                                 }
                             }
                         }
                         item(span = { GridItemSpan(maxLineSpan) }) {
-                            OutlinedButton(onClick = { open(Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS) }) { Text(label("قائمة Android الكاملة", "Full Android app list")) }
+                            OutlinedButton(onClick = { open(Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS) }) { Text(label("قائمة Android الكاملة", "Full Android app list"), color = Color.White) }
                         }
                     } else {
                         item(span = { GridItemSpan(maxLineSpan) }) {
-                            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                            Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(Q4u.Background).border(1.dp, Q4u.Gold, RoundedCornerShape(24.dp)).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                                 Button(onClick = { ar = !ar; prefs.edit().putBoolean("ar", ar).apply() }) { Text("العربية / English") }
                                 OutlinedButton(onClick = { open(Settings.ACTION_HOME_SETTINGS) }) { Text(label("اختيار الشاشة الرئيسية", "Choose home launcher")) }
                                 OutlinedButton(onClick = { open(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS) }) { Text(label("خيارات المطوّر", "Developer options")) }
@@ -212,7 +226,7 @@ fun MobileHome() {
                                 OutlinedButton(onClick = { open(Settings.ACTION_SETTINGS) }) { Text(label("إعدادات Android", "Android settings")) }
                                 Text(label("الوضع الخفيف الافتراضي: خلفية ثابتة، بدون فيديو أو حركة مستمرة، وبدون تحديث طقس في الخلفية. الأيقونات دائرية داخل هذه الواجهة.", "Light defaults: static background, no looping video or animation, and no background weather polling. Icons are circular inside this launcher."))
                                 Text(label("الخلفية", "Wallpaper"), style = MaterialTheme.typography.titleMedium)
-                                listOf("gold" to label("ذهبي هادئ", "Soft gold"), "maroon" to label("عنابي", "Maroon"), "blue" to label("أزرق ليلي", "Midnight blue"), "plain" to label("أسود سادة", "Plain black")).forEach { (id, title) ->
+                                listOf("qatar" to label("قطر • عنابي وثلجي", "Qatar • maroon and snow"), "maroon" to label("عنابي ملكي", "Royal maroon"), "pearl" to label("عنابي ناعم", "Soft maroon"), "plain" to label("عنابي سادة", "Plain maroon")).forEach { (id, title) ->
                                     FilterChip(selected = wallpaper == id, onClick = { wallpaper = id; prefs.edit().putString("wallpaper", id).apply() }, label = { Text(title) })
                                 }
                                 listOf(
@@ -229,7 +243,7 @@ fun MobileHome() {
                                 OutlinedButton(onClick = { pickWallpaper.launch(arrayOf("image/*")) }) { Text(label("اختيار صورة من الجهاز", "Choose image from device")) }
                                 if (wallpaper == "custom" && wallpaperBitmap == null) Text(label("الصورة غير متاحة؛ تظهر الخلفية الافتراضية. اختر صورة أخرى.", "Image unavailable; default background shown. Choose another image."))
                                 MobileWidgetSettings(ar) { widgetRevision++ }
-                                Text("Qatar4u • 1.0.0")
+                                Text("Qatar4u Mobile • 1.1.0", color = Q4u.Maroon)
                             }
                         }
                     }
@@ -272,6 +286,26 @@ fun MobileHome() {
                 }
             }, confirmButton = { TextButton(onClick = { selected = null }) { Text(label("إغلاق", "Close")) } })
         }
+        }
+    }
+}
+
+@Composable
+private fun QatarMobileHeader(subtitle: String) {
+    Row(Modifier.fillMaxWidth().padding(top = 18.dp, bottom = 12.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+        Column {
+            Text("Qatar4u Mobile", color = Color.White, style = MaterialTheme.typography.titleLarge)
+            Text(subtitle, color = Q4u.GoldLight, style = MaterialTheme.typography.bodySmall)
+        }
+        Canvas(Modifier.size(45.dp, 66.dp)) {
+            val p = androidx.compose.ui.graphics.Path()
+            p.moveTo(0f, 0f); p.lineTo(size.width * 0.6f, 0f)
+            for (i in 0 until 9) {
+                p.lineTo(size.width, size.height * (i + 0.5f) / 9f)
+                p.lineTo(size.width * 0.6f, size.height * (i + 1f) / 9f)
+            }
+            p.lineTo(0f, size.height); p.close()
+            drawPath(p, Color(0xFFF5F8FA))
         }
     }
 }

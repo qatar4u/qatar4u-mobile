@@ -1,7 +1,10 @@
 package net.qatar4u.mobile.ui
 
 import android.content.Context
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -85,10 +88,10 @@ fun MobileWidgets(ar: Boolean, revision: Int) {
     val times = remember(city.id, time.toLocalDate()) { PrayerTimes.minutes(time.toLocalDate(), city.lat, city.lon, ZoneId.of(city.zone)) }
     val next = PrayerTimes.next(times, time.hour * 60 + time.minute)
     val names = if (ar) listOf("الفجر", "الشروق", "الظهر", "العصر", "المغرب", "العشاء") else listOf("Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha")
-    Card(Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Card(Modifier.fillMaxWidth(), shape = RoundedCornerShape(26.dp), border = BorderStroke(1.dp, Q4u.Gold), colors = CardDefaults.cardColors(containerColor = Q4u.Background)) {
+        Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(city.name(if (ar) "ar" else "en") + " • " + time.toLocalTime().withSecond(0).withNano(0), style = MaterialTheme.typography.titleMedium)
-            Text((if (ar) "الصلاة القادمة: " else "Next prayer: ") + names[next] + " • " + PrayerTimes.clock(times[next], true), color = Q4u.Gold)
+            Text((if (ar) "الصلاة القادمة: " else "Next prayer: ") + names[next] + " • " + PrayerTimes.clock(times[next], true), color = Q4u.Maroon)
             Text(names.indices.joinToString("  •  ") { names[it] + " " + PrayerTimes.clock(times[it], true) }, style = MaterialTheme.typography.bodySmall)
             if (enabled) {
                 weather?.let { current ->
