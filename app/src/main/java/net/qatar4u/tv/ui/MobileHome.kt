@@ -15,6 +15,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.foundation.Canvas
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Apps
@@ -297,15 +298,40 @@ private fun QatarMobileHeader(subtitle: String) {
             Text("Qatar4u Mobile", color = Color.White, style = MaterialTheme.typography.titleLarge)
             Text(subtitle, color = Q4u.GoldLight, style = MaterialTheme.typography.bodySmall)
         }
-        Canvas(Modifier.size(45.dp, 66.dp)) {
-            val p = androidx.compose.ui.graphics.Path()
-            p.moveTo(0f, 0f); p.lineTo(size.width * 0.6f, 0f)
-            for (i in 0 until 9) {
-                p.lineTo(size.width, size.height * (i + 0.5f) / 9f)
-                p.lineTo(size.width * 0.6f, size.height * (i + 1f) / 9f)
-            }
-            p.lineTo(0f, size.height); p.close()
-            drawPath(p, Color(0xFFF5F8FA))
+        QatarFlagBadge()
+    }
+}
+
+@Composable
+private fun QatarFlagBadge() {
+    Canvas(Modifier.size(66.dp).padding(3.dp)) {
+        val center = androidx.compose.ui.geometry.Offset(size.width / 2f, size.height / 2f)
+        val radius = size.minDimension / 2f
+        // Static layered gradients create a metallic raised rim without animation or bitmap work.
+        drawCircle(Color.Black.copy(alpha = 0.25f), radius * 0.97f, center.copy(y = center.y + 3.dp.toPx()))
+        drawCircle(Brush.linearGradient(listOf(Color(0xFFFFF0BD), Color(0xFFE4BF70), Color(0xFF805019), Color(0xFFC99D4A))), radius)
+        drawCircle(Brush.linearGradient(listOf(Color(0xFF8A5A21), Color(0xFFFFE8A2))), radius * 0.89f)
+        val innerRadius = radius * 0.81f
+        val circle = androidx.compose.ui.graphics.Path().apply {
+            addOval(androidx.compose.ui.geometry.Rect(center.x - innerRadius, center.y - innerRadius, center.x + innerRadius, center.y + innerRadius))
         }
+        clipPath(circle) {
+            drawCircle(Color(0xFF8A1538), innerRadius)
+            val left = center.x - innerRadius
+            val top = center.y - innerRadius
+            val edge = left + innerRadius * 0.68f
+            val tip = edge + innerRadius * 0.30f
+            val flag = androidx.compose.ui.graphics.Path().apply {
+                moveTo(left, top); lineTo(edge, top)
+                for (i in 0 until 9) {
+                    lineTo(tip, top + (i + 0.5f) * innerRadius * 2f / 9f)
+                    lineTo(edge, top + (i + 1f) * innerRadius * 2f / 9f)
+                }
+                lineTo(left, top + innerRadius * 2f); close()
+            }
+            drawPath(flag, Color(0xFFF5F8FA))
+            drawRect(Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.22f), Color.Transparent, Color.Black.copy(alpha = 0.17f))))
+        }
+        drawCircle(Color(0xFFFFEAB0), innerRadius, style = androidx.compose.ui.graphics.drawscope.Stroke(0.7.dp.toPx()))
     }
 }
