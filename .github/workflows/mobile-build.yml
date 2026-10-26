@@ -26,9 +26,9 @@ jobs:
           chmod +x gradlew
           ./gradlew --no-daemon :app:testDebugUnitTest :app:lintDebug :app:assembleDebug
           mkdir -p candidate
-          cp app/build/outputs/apk/debug/app-debug.apk candidate/Qatar4u-Mobile-1.1.0-preview.apk
+          cp app/build/outputs/apk/debug/app-debug.apk candidate/Qatar4u-Mobile-1.1.1-preview.apk
           cd candidate
-          sha256sum Qatar4u-Mobile-1.1.0-preview.apk > SHA256SUMS
+          sha256sum Qatar4u-Mobile-1.1.1-preview.apk > SHA256SUMS
       - uses: actions/upload-artifact@v4
         with:
           name: Qatar4u-Mobile-preview
