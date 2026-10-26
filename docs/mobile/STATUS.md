@@ -15,3 +15,5 @@ Build when Android SDK 34 and JDK 17 are available: ./gradlew :app:assembleDebug
 Installation is pending preview approval. Restore home screen using Android Settings > Default apps > Home app. No need to remove the old launcher.
 
 Added persisted favorites, four-column launcher, four static theme backgrounds, five bundled Qatar backgrounds, and a custom-image document picker with persisted read access and sampled image decoding. Application ID updated before first installation to net.qatar4u.mobile. Repository: qatar4u/qatar4u-mobile. Native screenshot/device QA still pending successful compilation.
+
+Server build review: initial SDK setup failure corrected; mobile-only manifest removes Leanback feature. Arabic/English device-trial guides added. Final server build outcome is recorded in GitHub Actions.
