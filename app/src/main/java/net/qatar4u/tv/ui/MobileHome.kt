@@ -78,6 +78,7 @@ fun MobileHome() {
             }.getOrNull()
         } else null
     }
+    var widgetRevision by remember { mutableStateOf(0) }
     var tab by remember { mutableStateOf(0) }
     var query by remember { mutableStateOf("") }
     var apps by remember { mutableStateOf<List<AppEntry>>(emptyList()) }
@@ -129,6 +130,7 @@ fun MobileHome() {
                         Text(SimpleDateFormat("EEE, d MMM • HH:mm", if (ar) Locale("ar") else Locale.ENGLISH).format(Date()), color = Q4u.TextSecondary)
                     }
                     if (tab == 0) {
+                        item(span = { GridItemSpan(maxLineSpan) }) { MobileWidgets(ar, widgetRevision) }
                         item(span = { GridItemSpan(maxLineSpan) }) {
                             OutlinedTextField(value = query, onValueChange = { query = it }, label = { Text(label("ابحث عن تطبيق", "Search apps")) }, singleLine = true, modifier = Modifier.fillMaxWidth())
                         }
@@ -226,6 +228,7 @@ fun MobileHome() {
                                 }
                                 OutlinedButton(onClick = { pickWallpaper.launch(arrayOf("image/*")) }) { Text(label("اختيار صورة من الجهاز", "Choose image from device")) }
                                 if (wallpaper == "custom" && wallpaperBitmap == null) Text(label("الصورة غير متاحة؛ تظهر الخلفية الافتراضية. اختر صورة أخرى.", "Image unavailable; default background shown. Choose another image."))
+                                MobileWidgetSettings(ar) { widgetRevision++ }
                                 Text("Qatar4u • 1.0.0")
                             }
                         }

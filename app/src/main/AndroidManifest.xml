@@ -11,11 +11,7 @@
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <!-- Asked only when the owner taps "Use my location"; a city picked from the list needs nothing. -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <!-- Asked only when the owner opens the local video library. -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
 
     <!-- Android 11+ package visibility for the app hub. -->
     <queries>
@@ -42,7 +38,7 @@
         android:theme="@style/Theme.Q4u"
         android:supportsRtl="true"
         android:allowBackup="false"
-        android:usesCleartextTraffic="true"
+        android:usesCleartextTraffic="false"
         android:resizeableActivity="true"
         tools:targetApi="34">
 
