@@ -17,3 +17,5 @@ Installation is pending preview approval. Restore home screen using Android Sett
 Added persisted favorites, four-column launcher, four static theme backgrounds, five bundled Qatar backgrounds, and a custom-image document picker with persisted read access and sampled image decoding. Application ID updated before first installation to net.qatar4u.mobile. Repository: qatar4u/qatar4u-mobile. Native screenshot/device QA still pending successful compilation.
 
 Server build review: initial SDK setup failure corrected; mobile-only manifest removes Leanback feature. Arabic/English device-trial guides added. Final server build outcome is recorded in GitHub Actions.
+
+Validated candidate: commit 250ee3316420c2d5c4d975d482b344710bf0f0c4, Actions run 40284146672. testDebugUnitTest, lintDebug and assembleDebug all passed. Downloaded APK SHA256 matches generated SHA256SUMS: a16dbfec96c087f18ccaefd4ee037ad00bf4e3bd69d84d39afa7e77a564cf815. APK size 18,309,429 bytes. Native runtime/visual/performance checks on the physical phone remain pending. Earlier local-build failure notes describe the prior environment; the successful server build supersedes the compilation blocker.
