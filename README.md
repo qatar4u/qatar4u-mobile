@@ -1,6 +1,6 @@
 # Qatar4u Mobile
 
-Qatar4u • 1.0.0 preview
+Qatar4u • 1.1.0 preview
 
 Light Android phone launcher forked from Qatar4u TV, with circular icons, Arabic/English, visible-app management and device care. Independent application ID: net.qatar4u.mobile.
 
@@ -23,3 +23,7 @@ Four-column circular launcher, saved favorites and language, four static color t
 [Arabic installation and rollback](docs/mobile/INSTALL_AR.md) · [English installation and rollback](docs/mobile/INSTALL_EN.md).
 
 Derived from qatar4u/qatar4u-tv; upstream device-test claims do not apply to this mobile edition. Physical-device performance, visual verification and OEM compatibility remain pending.
+
+## Qatar theme
+
+Maroon #8A1538, snow #F5F8FA and gold outlines #C6A15B. [Illustrative design preview](docs/mobile/qatar-theme-preview.png), not a device screenshot.
