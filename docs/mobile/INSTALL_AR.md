@@ -12,13 +12,13 @@
 5. تحقق من SHA256 للملف وقارنه بالسطر الموجود في SHA256SUMS داخل الحزمة:
 
 ```powershell
-Get-FileHash "$env:USERPROFILE\Downloads\Qatar4u-Mobile-preview\Qatar4u-Mobile-1.0.0-preview.apk" -Algorithm SHA256
+Get-FileHash "$env:USERPROFILE\Downloads\Qatar4u-Mobile-preview\Qatar4u-Mobile-1.1.0-preview.apk" -Algorithm SHA256
 ```
 
 6. بعد موافقتك على التثبيت، عدّل مسار الملف إذا اختلف ثم نفّذ:
 
 ```powershell
-.\adb.exe install -r "$env:USERPROFILE\Downloads\Qatar4u-Mobile-preview\Qatar4u-Mobile-1.0.0-preview.apk"
+.\adb.exe install -r "$env:USERPROFILE\Downloads\Qatar4u-Mobile-preview\Qatar4u-Mobile-1.1.0-preview.apk"
 .\adb.exe shell am start -n net.qatar4u.mobile/net.qatar4u.mobile.MainActivity
 ```
 
